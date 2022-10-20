@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Scripts.UI.Interface;
@@ -20,6 +21,11 @@ namespace Game.Scripts.UI
         [SerializeField] private GameObject playerChoicePrefab;
         [SerializeField] private Image playerSprite;
         [SerializeField] private Text playerLabel;
+
+        private void Awake()
+        {
+            
+        }
 
         private void Start()
         {

@@ -4,6 +4,7 @@ using Game.Scripts.UI.Interface;
 using Invector.vCharacterController;
 using RPGBatler.Player.Interface;
 using UnityEngine;
+using Zenject;
 
 namespace RPGBatler.Player
 {
@@ -11,7 +12,9 @@ namespace RPGBatler.Player
     {
         private string attackAnimation;
 
-        [SerializeField] private IInteractableDialogView dialogView;
+        [Inject]
+        private IInteractableDialogView dialogView;
+        // [SerializeField] private GameObject dialogView1;
 
         private void Awake()
         {
