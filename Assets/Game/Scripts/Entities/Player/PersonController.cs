@@ -1,63 +1,72 @@
-﻿using System;
-using Game.Scripts.ScriptableObjects;
-using Game.Scripts.UI.Interface;
-using Invector.vCharacterController;
-using RPGBatler.Player.Interface;
+﻿using Game.Scripts.UI;
+using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
-using Zenject;
 
 namespace RPGBatler.Player
 {
     public class PersonController : AController
     {
         private string attackAnimation;
-
-        [Inject]
-        private IInteractableDialogView dialogView;
-        // [SerializeField] private GameObject dialogView1;
+        [SerializeField]
+        private ADialogView dialogView;
+        [SerializeField]
+        private Transform center;
+        private const int DISTANCE_RAY_INTERACT = 15;
 
         private void Awake()
         {
-            InitData();
+            this.InitData();
         }
 
-        private void InitData()
+        public override void ChangeLock(bool state)
         {
-            attackAnimation = "Attack";
+            if (!state)
+            {
+                base.stopMove = false;
+                base.lockMovement = false;
+            }
+            else
+            {
+                base.stopMove = true;
+                base.lockMovement = true;
+                base.inputMagnitude = 0f;
+            }
         }
 
         public override void ControlAttack()
         {
-            animator.SetTrigger(attackAnimation);
+            base.animator.SetTrigger(this.attackAnimation);
         }
 
         public override void ControlInteract()
         {
-            if (TryInteractNPC(out VIDE_Assign assigned))
+            VIDE_Assign assign;
+            if (this.TryInteractNPC(out assign))
             {
-                InteractWithNPC(assigned);
-                // UI.Interact
-                // disable input?
-                // change camera
+                this.InteractWithNPC(assign);
+                this.ChangeLock(true);
             }
+        }
+
+        private void InitData()
+        {
+            this.attackAnimation = "Attack";
         }
 
         private void InteractWithNPC(VIDE_Assign assigned)
         {
-            dialogView.Interact(assigned);
+            this.dialogView.Interact(assigned);
         }
-        
+
         private bool TryInteractNPC(out VIDE_Assign assigned)
         {
-            RaycastHit rHit;
-
-            if (Physics.Raycast(transform.position, transform.forward, out rHit, 2))
+            RaycastHit hit;
+            VIDE_Assign assign;
+            if (Physics.Raycast(this.center.position, base.transform.forward, out hit, 15f) && hit.collider.TryGetComponent<VIDE_Assign>(out assign))
             {
-                if (rHit.collider.TryGetComponent(out VIDE_Assign assign))//GetComponent<VIDE_Assign>().?)
-                {
-                    assigned = assign;
-                    return true;
-                }
+                assigned = assign;
+                return true;
             }
             assigned = null;
             return false;

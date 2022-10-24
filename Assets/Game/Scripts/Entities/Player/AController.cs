@@ -1,11 +1,18 @@
 ﻿using Invector.vCharacterController;
 using RPGBatler.Player.Interface;
+using System;
 
 namespace RPGBatler.Player
 {
-    public abstract class AController : vThirdPersonController, IInteractableController, IAttacableController
+
+    public abstract class AController : vThirdPersonController, IInteractableController, IAttacableController, ILockerController
     {
-        public abstract void ControlInteract();
+        protected AController()
+        {
+        }
+
+        public abstract void ChangeLock(bool state);
         public abstract void ControlAttack();
+        public abstract void ControlInteract();
     }
 }
